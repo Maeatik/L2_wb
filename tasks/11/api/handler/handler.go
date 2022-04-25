@@ -1,13 +1,14 @@
 package handler
 
 import (
-	"L2-maste/tasks/11/domain"
+	"L2/tasks/11/domain"
 	"encoding/json"
 	"github.com/sirupsen/logrus"
 	"net/http"
 	"strconv"
 )
 
+// Handler Структура обработчика. Содержит в себе хранилище с моделям и логгер для миддлвайра
 type Handler struct {
 	Storage domain.StorageInterface
 	Logger  *logrus.Logger
@@ -15,6 +16,7 @@ type Handler struct {
 
 type APIResponse func(resp http.ResponseWriter)
 
+// Handle обработчик для установки response и request
 func (h *Handler) Handle(fn func(req *http.Request) APIResponse) func(resp http.ResponseWriter, req *http.Request) {
 	return func(resp http.ResponseWriter, req *http.Request) {
 		resp.Header().Set("Server", "GoCalendar")
@@ -22,6 +24,7 @@ func (h *Handler) Handle(fn func(req *http.Request) APIResponse) func(resp http.
 	}
 }
 
+// JSON отправляем json
 func (h *Handler) JSON(code int, data interface{}) APIResponse {
 	return h.sendJSON(code, map[string]interface{}{"result": data})
 }
@@ -29,13 +32,15 @@ func (h *Handler) JSON(code int, data interface{}) APIResponse {
 func (h *Handler) sendJSON(code int, data interface{}) APIResponse {
 	var encData []byte
 	var err error
-
+	//если переданная модель не пустая парсим ее в JSON
 	if data != nil {
 		encData, err = json.Marshal(data)
 		if err != nil {
+			//Если не получилось, говорим, что на сервере произошла ошибка
 			return h.Error(http.StatusInternalServerError, err)
 		}
 	}
+	//если все хорошо, отправляем клиенту полученную/ые модель/и
 	return func(resp http.ResponseWriter) {
 		resp.Header().Set("Content-Type", "application/json")
 		resp.Header().Set("Content-Length", strconv.Itoa(len(encData)))
@@ -44,6 +49,7 @@ func (h *Handler) sendJSON(code int, data interface{}) APIResponse {
 	}
 }
 
+//Если случилась ошибка, отправляем сообщение об ошибке
 func (h *Handler) Error(code int, err error) APIResponse {
-	return h.sendJSON(code, map[string]string{"error1": err.Error()})
+	return h.sendJSON(code, map[string]string{"error": err.Error()})
 }

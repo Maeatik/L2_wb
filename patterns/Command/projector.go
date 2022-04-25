@@ -17,7 +17,7 @@ func (p *projector) on() {
 
 func (p *projector) off() {
 	if p.isOn == false {
-		fmt.Println("Проектор итак выключен")
+		fmt.Println("Проектор и так выключен")
 	} else {
 		p.isOn = false
 		fmt.Println("Вы выключили проектор")

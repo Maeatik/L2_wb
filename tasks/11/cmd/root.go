@@ -10,6 +10,7 @@ var rootCmd = &cobra.Command{
 	Use: "go-calendar [command]",
 }
 
+// Execute запускаем сервер
 func Execute() {
 	rootCmd.AddCommand(apiServerCmd)
 

@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"L2-master/tasks/11/api"
-	"L2-master/tasks/11/domain"
+	"L2/tasks/11/api"
+	"L2/tasks/11/domain"
 	"github.com/spf13/cobra"
 	"time"
 )
@@ -14,6 +14,7 @@ var (
 	pWriteTimeout   uint8
 	pMaxHeaderBytes int
 
+	//Настраиваем сервер
 	apiServerCmd = &cobra.Command{
 		Use:   "api-server",
 		Short: "Run REST API server",
@@ -25,12 +26,15 @@ var (
 				WriteTimeout:   time.Duration(pWriteTimeout) * time.Second,
 				MaxHeaderBytes: pMaxHeaderBytes,
 			}
+			//создаем хранилище моделей
 			storage := domain.NewStorage()
+			//стартуем
 			api.StartServer(storage, config)
 		},
 	}
 )
 
+//Функция, определяющаяся при инициализации
 func init() {
 	apiServerCmd.PersistentFlags().StringVar(&pHost, "host", "", "Listening host")
 	apiServerCmd.PersistentFlags().StringVar(&pPort, "port", "8000", "Listening port")

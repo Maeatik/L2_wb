@@ -1,18 +1,22 @@
 package main
 
 func main() {
+	//создаем объект, которым будем управлять
 	projector := &projector{}
 
+	//создаем команды и говорим, каким устройством они будут управлять
 	onCommand := &onCommand{device: projector}
 
 	offCommand := &offCommand{device: projector}
 
-	onRemote := &remoteController{command: onCommand}
+	//создаем пульт и задаем ему команду
+	Remote := &remoteController{command: onCommand}
 
-	onRemote.pressButton()
+	//жмякаем на кнопку
+	Remote.pressButton()
 
-	offRemote := &remoteController{command: offCommand}
+	Remote = &remoteController{command: offCommand}
 
-	offRemote.pressButton()
-	offRemote.pressButton()
+	Remote.pressButton()
+	Remote.pressButton()
 }

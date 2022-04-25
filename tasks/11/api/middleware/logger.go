@@ -6,6 +6,7 @@ import (
 	"time"
 )
 
+//отображение информации на сервере при запросе
 func LoggerMiddleware(log *logrus.Logger) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(resp http.ResponseWriter, req *http.Request) {

@@ -1,9 +1,9 @@
 package api
 
 import (
-	"L2-master/tasks/11/api/handler"
-	"L2-master/tasks/11/api/middleware"
-	"L2-master/tasks/11/domain"
+	"L2/tasks/11/api/handler"
+	"L2/tasks/11/api/middleware"
+	"L2/tasks/11/domain"
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
 	"net"
@@ -11,6 +11,7 @@ import (
 	"time"
 )
 
+//Структура конфигурации сервера
 type ServerConfig struct {
 	Host           string
 	Port           string
@@ -19,6 +20,7 @@ type ServerConfig struct {
 	MaxHeaderBytes int
 }
 
+//Инициализация роутера, указание путей для запросов и реализации методов GET и POST
 func initRouter(h *handler.Handler) *mux.Router {
 	router := mux.NewRouter()
 
@@ -34,19 +36,26 @@ func initRouter(h *handler.Handler) *mux.Router {
 
 }
 
+//Запуск сервера
 func StartServer(storage domain.StorageInterface, config *ServerConfig) {
+	//Создание логгера
 	logger := logrus.New()
+	//для того чтобы возвращать что-либо с сервера - парсим сообщение в JSON
 	logger.SetFormatter(&logrus.JSONFormatter{})
+
+	//Создаем обработчик
 	h := &handler.Handler{
 		Storage: storage,
 		Logger:  logger,
 	}
-
+	//Создаем роутер
 	router := initRouter(h)
 
+	//Подключаем миддлвайр
 	router.Use(middleware.RecoverMiddleware(h.Logger))
 	router.Use(middleware.LoggerMiddleware(h.Logger))
 
+	//создадим и настроим сервер
 	server := &http.Server{
 		Addr:           net.JoinHostPort(config.Host, config.Port),
 		Handler:        router,
@@ -55,6 +64,7 @@ func StartServer(storage domain.StorageInterface, config *ServerConfig) {
 		MaxHeaderBytes: config.MaxHeaderBytes,
 	}
 
+	//Наконец-то запускаем сервер
 	if err := server.ListenAndServe(); err != http.ErrServerClosed {
 		logger.Fatalf("HTTP server error: %s", err)
 	}

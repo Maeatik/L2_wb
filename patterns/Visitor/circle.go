@@ -8,6 +8,7 @@ type circle struct {
 	y      int
 }
 
+//подтверждаем фигуру и посещаем
 func (c *circle) accept(v visitor) {
 	v.visitCircle(c)
 }

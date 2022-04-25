@@ -1,5 +1,6 @@
 package main
 
+//интерфейс строителя
 type builder interface {
 	setMicrowave()
 	setRefrigerator()
@@ -7,6 +8,7 @@ type builder interface {
 	getKitchen() kitchen
 }
 
+//устанавливаем тип кухни, которую надо строить
 func getBuilder(build string) builder {
 	if build == "ok" {
 		return &okKitchen{}

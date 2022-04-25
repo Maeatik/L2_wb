@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
+	"github.com/mitchellh/go-ps"
 	"log"
 	"os"
 	"strings"

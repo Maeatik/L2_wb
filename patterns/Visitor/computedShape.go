@@ -6,6 +6,7 @@ type computedShape struct {
 	area int
 }
 
+//посещаем фигуры при их подтверждении из функции мейн
 func (c *computedShape) visitDot(d *dot) {
 
 	fmt.Println("Dot #", d.getId(), ": x:", d.getX(), "y:", d.getY())

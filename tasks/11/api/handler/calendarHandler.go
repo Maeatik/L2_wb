@@ -42,12 +42,12 @@ func (h *Handler) ModelsForWeekHandler(req *http.Request) APIResponse {
 		return h.Error(http.StatusBadRequest, err)
 	}
 
-	events, err := h.Storage.GetByPeriod(data.StartDay, data.StartDay.Add(time.Hour*24*7))
+	models, err := h.Storage.GetByPeriod(data.StartDay, data.StartDay.Add(time.Hour*24*7))
 	if err != nil {
 		return h.Error(http.StatusInternalServerError, err)
 	}
 
-	return h.JSON(http.StatusOK, events)
+	return h.JSON(http.StatusOK, models)
 }
 
 func (e *modelsDateReq) parse(req *http.Request) error {

@@ -1,6 +1,7 @@
 package main
 
 func main() {
+	//создаем фигуры
 	circle := &circle{
 		radius: 5,
 		x:      5,
@@ -20,8 +21,10 @@ func main() {
 		wight:  10,
 		height: 15,
 	}
+	//создаем их обработчика
 	computingShape := &computedShape{}
 
+	//посещаем каждую из фигур
 	circle.accept(computingShape)
 	dot.accept(computingShape)
 	rectangle.accept(computingShape)

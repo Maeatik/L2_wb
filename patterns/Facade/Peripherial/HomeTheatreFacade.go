@@ -10,6 +10,7 @@ type HomeTheatreFacade struct {
 	Dvd       DvdPlayer
 }
 
+//включаем аппаратуру домашнего кинотеатра
 func (h *HomeTheatreFacade) WatchFilm(movie string) {
 	h.Dvd.setMovie(movie)
 	h.Dvd.on()
@@ -19,6 +20,7 @@ func (h *HomeTheatreFacade) WatchFilm(movie string) {
 	fmt.Println("\nПриятного просмотра!\n")
 }
 
+//выключаем аппаратуру домашнего кинотеатра
 func (h *HomeTheatreFacade) Stop() {
 	h.Dvd.off()
 	h.Projector.off()

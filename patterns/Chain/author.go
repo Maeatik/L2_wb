@@ -6,6 +6,7 @@ type author struct {
 	next handler
 }
 
+//
 func (a *author) execute(b *book) {
 	if b.writingDone {
 		fmt.Println(b.author, "дописал книгу")

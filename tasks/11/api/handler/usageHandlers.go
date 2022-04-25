@@ -8,6 +8,8 @@ import (
 	"time"
 )
 
+//Модели для запросов и респонсов
+
 type modelCreateReq struct {
 	Id       string
 	Title    string
@@ -25,6 +27,7 @@ type modelUpdateReq struct {
 	DateTo   time.Time
 }
 
+//Указываем теги JSON'а для отправки клиенту
 type modelCreateResp struct {
 	Id       string `json:"id"`
 	Title    string `json:"title"`
@@ -39,22 +42,27 @@ type modelUpdateResp struct {
 	DateTo   string `json:"date_to"`
 }
 
+// MainHandler Обрабочик пустого запроса
 func (h *Handler) MainHandler(_ *http.Request) APIResponse {
 	return h.JSON(http.StatusOK, map[string]string{"main": "/ server route"})
 }
 
+// ModelCreateHandler Обработчик запроса на создание модели
 func (h *Handler) ModelCreateHandler(req *http.Request) APIResponse {
 	data := &modelCreateReq{}
+	//парсим запрос, еслм ошибка, говорим, что запрос был очень-очень плохим
 	if err := data.parse(req); err != nil {
 		return h.Error(http.StatusBadRequest, err)
 	}
-	fmt.Println(data.Id, data.Title, data.DateFrom, data.DateTo)
-	model := domain.NewEvent(data.Id, data.Title, data.DateFrom, data.DateTo)
+	//Создаем новую модель
+	model := domain.NewModel(data.Id, data.Title, data.DateFrom, data.DateTo)
 
+	//если не получилось ее сохранить - сообщаем, что на сервере произошла ошибка
 	if err := h.Storage.Save(model); err != nil {
 		h.Error(http.StatusInternalServerError, err)
 	}
-	fmt.Println(h.Storage.GetAll())
+
+	//отправляем JSON
 	return h.JSON(http.StatusCreated, &modelCreateResp{
 		Id:       model.Id,
 		Title:    model.Title,
@@ -62,6 +70,8 @@ func (h *Handler) ModelCreateHandler(req *http.Request) APIResponse {
 		DateTo:   model.DateTo.Format(time.RFC3339),
 	})
 }
+
+//Парсер запроса на создание модели
 func (e *modelCreateReq) parse(req *http.Request) error {
 	var err error
 	if err = req.ParseForm(); err != nil {
@@ -94,24 +104,29 @@ func (e *modelCreateReq) parse(req *http.Request) error {
 	return nil
 }
 
+// ModelDeleteHandler Запрос на удаление модели
 func (h *Handler) ModelDeleteHandler(req *http.Request) APIResponse {
 	data := &modelDeleteReq{}
+
 	if err := data.parse(req); err != nil {
 		return h.Error(http.StatusBadRequest, err)
 	}
-	fmt.Println(h.Storage.GetAll())
+	//получаем модель по айди
 	model, err := h.Storage.GetById(data.Id)
 
 	if err != nil {
 		return h.Error(http.StatusInternalServerError, err)
 	}
 
+	//Если модель не нашлась, то 404
 	if model == nil {
 		return h.Error(http.StatusNotFound, errors.New("model not found"))
 	}
+	//если нашлось, то 200 и обнуляем модель
 	return h.sendJSON(http.StatusAccepted, nil)
 }
 
+//поиск модели по айди
 func (e *modelDeleteReq) parse(req *http.Request) error {
 
 	if err := req.ParseForm(); err != nil {
@@ -125,6 +140,7 @@ func (e *modelDeleteReq) parse(req *http.Request) error {
 	return nil
 }
 
+//обрабочик изменения модели
 func (h *Handler) ModelUpdateHandler(req *http.Request) APIResponse {
 	data := &modelUpdateReq{}
 	if err := data.parse(req); err != nil {
