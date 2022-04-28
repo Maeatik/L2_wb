@@ -7,11 +7,11 @@ import (
 
 func TestAfterFixed(t *testing.T) {
 	fg := &flags{
-		After: 1,
+		After: 2,
 		Fixed: true,
 	}
-	pattern := "asd(a|b|c)"
-	expect := "+ asd(a|b|c)\n qwertaabc"
+	pattern := "lgnu9d"
+	expect := "+ lgnu9d\n lignum\n magNum"
 	reader, err := os.Open("test.txt")
 	if err != nil {
 		t.Errorf("open file error: [%s]", err)
@@ -29,11 +29,11 @@ func TestAfterFixed(t *testing.T) {
 
 func TestBeforeIgnoreCase(t *testing.T) {
 	fg := &flags{
-		Before:     1,
+		Before:     2,
 		IgnoreCase: true,
 	}
-	pattern := "asd(a|b|c)"
-	expect := " AsD(A|b|C)\n+ acdasdasc\n abbaaaasf\n+ acdaSdasc\n+ acdaSdcasc"
+	pattern := "lgnu9d"
+	expect := " gnu\n interregnum\n+ lgnu9d"
 	reader, err := os.Open("test.txt")
 	if err != nil {
 		t.Errorf("open file error: [%s]", err)
@@ -52,8 +52,8 @@ func TestBeforeIgnoreCase(t *testing.T) {
 
 func TestCount(t *testing.T) {
 	fg := &flags{Count: true}
-	pattern := "abc"
-	expect := "2 совпадений"
+	pattern := "gnu"
+	expect := "7 совпадений"
 	reader, err := os.Open("test.txt")
 	if err != nil {
 		t.Errorf("open file error: [%s]", err)
@@ -74,8 +74,8 @@ func TestLineNumberContext(t *testing.T) {
 		Context: 1,
 		LineNum: true,
 	}
-	pattern := "ks"
-	expect := "7  acdaSdcasc\n8 + artksddas\n9  asd(a|b|c)"
+	pattern := "l"
+	expect := "3  interregnum\n4 + lgnu9d\n5 + lignum\n6  magNum"
 	reader, err := os.Open("test.txt")
 	if err != nil {
 		t.Errorf("open file error: [%s]", err)
@@ -96,8 +96,8 @@ func TestInvertIgnoreCase(t *testing.T) {
 		Invert:     true,
 		IgnoreCase: true,
 	}
-	pattern := "asd"
-	expect := "abcabcabc\naaabbbccc\nabbaaaasf\nartksddas\nqwertaabc"
+	pattern := "in"
+	expect := "cygnus\ngnu\nlgnu9d\nlignum\nmagNum\nmagnuson\nsphagnum"
 	reader, err := os.Open("test.txt")
 	if err != nil {
 		t.Errorf("open file error: [%s]", err)
